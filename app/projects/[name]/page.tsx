@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllProjects, getPostsByProject } from "@/lib/blog";
 import { PostItem } from "@/components/blog/post-item";
@@ -14,6 +15,39 @@ export async function generateStaticParams() {
   return projects.map((project) => ({
     name: project.toLowerCase().replace(/\s+/g, '-'),
   }));
+}
+
+export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
+  const { name: projectSlug } = await params;
+  const projects = getAllProjects();
+
+  const projectName = projects.find(
+    (p) => p.toLowerCase().replace(/\s+/g, '-') === projectSlug
+  );
+
+  if (!projectName) {
+    return {
+      title: "Project Not Found",
+    };
+  }
+
+  const posts = getPostsByProject(projectName);
+
+  return {
+    title: projectName,
+    description: `Explore articles and updates about ${projectName}. ${posts.length} ${posts.length === 1 ? 'post' : 'posts'} available.`,
+    openGraph: {
+      title: `${projectName} | Learning Blog`,
+      description: `Explore articles and updates about ${projectName}`,
+      url: `https://seanoc.xyz/projects/${projectSlug}`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: projectName,
+      description: `Explore articles and updates about ${projectName}`,
+    },
+  };
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {

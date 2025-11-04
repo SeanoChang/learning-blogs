@@ -22,8 +22,19 @@ export async function generateMetadata({ params }: TagPageProps) {
   const decodedTag = decodeURIComponent(tag);
 
   return {
-    title: `Posts tagged "${decodedTag}" - Learning Blog`,
-    description: `Browse all posts tagged with ${decodedTag}`,
+    title: `Posts tagged "${decodedTag}"`,
+    description: `Browse all posts tagged with ${decodedTag}. Discover related articles and insights.`,
+    openGraph: {
+      title: `Posts tagged "${decodedTag}" | Learning Blog`,
+      description: `Browse all posts tagged with ${decodedTag}`,
+      url: `https://seanoc.xyz/tag/${tag}`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title: `Posts tagged "${decodedTag}"`,
+      description: `Browse all posts tagged with ${decodedTag}`,
+    },
   };
 }
 

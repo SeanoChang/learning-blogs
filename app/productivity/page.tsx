@@ -1,7 +1,19 @@
+import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/blog";
 import { PostItem } from "@/components/blog/post-item";
 import { assignSmartGridSizes } from "@/lib/grid-layout";
 import { EmailSubscription } from "@/components/newsletter/email-subscription";
+
+export const metadata: Metadata = {
+  title: "Productivity",
+  description: "Tips and insights on productivity, workflows, and efficient practices to help you get more done.",
+  openGraph: {
+    title: "Productivity | Learning Blog",
+    description: "Tips and insights on productivity, workflows, and efficient practices",
+    url: "https://seanoc.xyz/productivity",
+    type: "website",
+  },
+};
 
 export default function ProductivityPage() {
   const allPosts = getAllPosts(undefined, "productivity");

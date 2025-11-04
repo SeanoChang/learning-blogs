@@ -1,7 +1,19 @@
+import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/blog";
 import { PostItem } from "@/components/blog/post-item";
 import { assignSmartGridSizes } from "@/lib/grid-layout";
 import { EmailSubscription } from "@/components/newsletter/email-subscription";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description: "Explore articles on projects, productivity, and life insights. A minimal blog showcasing clean design and thoughtful content.",
+  openGraph: {
+    title: "Home | Learning Blog",
+    description: "Explore articles on projects, productivity, and life insights",
+    url: "https://seanoc.xyz",
+    type: "website",
+  },
+};
 
 export default function HomePage() {
   const allPosts = getAllPosts();

@@ -17,8 +17,54 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Learning Blog - Minimal & Clean",
-  description: "A minimal blog showcasing clean design and thoughtful typography",
+  title: {
+    default: "Learning Blog - Minimal & Clean",
+    template: "%s | Learning Blog",
+  },
+  description: "A minimal blog showcasing clean design and thoughtful typography. Explore projects, productivity tips, and life insights.",
+  keywords: ["blog", "learning", "projects", "productivity", "development", "design"],
+  authors: [{ name: "Sean O'Chang" }],
+  creator: "Sean O'Chang",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://seanoc.xyz",
+    siteName: "Learning Blog",
+    title: "Learning Blog - Minimal & Clean",
+    description: "A minimal blog showcasing clean design and thoughtful typography. Explore projects, productivity tips, and life insights.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Learning Blog",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Learning Blog - Minimal & Clean",
+    description: "A minimal blog showcasing clean design and thoughtful typography",
+    images: ["/og-image.png"],
+    creator: "@seanochang",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon-16x16.png",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({

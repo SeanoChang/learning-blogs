@@ -1,7 +1,19 @@
+import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/blog";
 import { PostItem } from "@/components/blog/post-item";
 import { assignSmartGridSizes } from "@/lib/grid-layout";
 import { EmailSubscription } from "@/components/newsletter/email-subscription";
+
+export const metadata: Metadata = {
+  title: "Life",
+  description: "Personal reflections, life lessons, and stories from everyday experiences.",
+  openGraph: {
+    title: "Life | Learning Blog",
+    description: "Personal reflections, life lessons, and stories from everyday experiences",
+    url: "https://seanoc.xyz/life",
+    type: "website",
+  },
+};
 
 export default function LifePage() {
   const allPosts = getAllPosts(undefined, "life");

@@ -1,7 +1,19 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllProjectsWithPosts } from "@/lib/blog";
 import { PostItem } from "@/components/blog/post-item";
 import { EmailSubscription } from "@/components/newsletter/email-subscription";
+
+export const metadata: Metadata = {
+  title: "Projects",
+  description: "Explore my projects and their related blog posts. Learn about development, design, and implementation details.",
+  openGraph: {
+    title: "Projects | Learning Blog",
+    description: "Explore my projects and their related blog posts",
+    url: "https://seanoc.xyz/projects",
+    type: "website",
+  },
+};
 
 export default function ProjectsPage() {
   const projectsWithPosts = getAllProjectsWithPosts(3);
