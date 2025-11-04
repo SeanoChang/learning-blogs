@@ -79,44 +79,319 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* Dark background with white accents */
+  --background: oklch(0.15 0.015 250);
+  --foreground: oklch(0.96 0.01 75);
+
+  /* Cards */
+  --card: oklch(0.19 0.02 250);
+  --card-foreground: oklch(0.96 0.01 75);
+
+  /* Popovers */
+  --popover: oklch(0.19 0.02 250);
+  --popover-foreground: oklch(0.96 0.01 75);
+
+  /* Primary: White for accents */
+  --primary: oklch(0.96 0.01 75);
+  --primary-foreground: oklch(0.15 0.015 250);
+
+  /* Secondary */
+  --secondary: oklch(0.25 0.02 260);
+  --secondary-foreground: oklch(0.96 0.01 75);
+
+  /* Muted */
+  --muted: oklch(0.25 0.02 260);
+  --muted-foreground: oklch(0.65 0.01 75);
+
+  /* Accent */
+  --accent: oklch(0.28 0.03 50);
+  --accent-foreground: oklch(0.96 0.01 75);
+
+  /* Destructive */
+  --destructive: oklch(0.65 0.20 25);
+
+  /* Borders */
+  --border: oklch(0.96 0.01 75 / 8%);
+  --input: oklch(0.96 0.01 75 / 12%);
+
+  /* Ring */
+  --ring: oklch(0.96 0.01 75 / 40%);
+
+  /* Charts */
+  --chart-1: oklch(0.70 0.18 75);
+  --chart-2: oklch(0.65 0.12 180);
+  --chart-3: oklch(0.75 0.15 50);
+  --chart-4: oklch(0.60 0.14 290);
+  --chart-5: oklch(0.68 0.16 30);
+
+  /* Sidebar */
+  --sidebar: oklch(0.19 0.02 250);
+  --sidebar-foreground: oklch(0.96 0.01 75);
+  --sidebar-primary: oklch(0.96 0.01 75);
+  --sidebar-primary-foreground: oklch(0.15 0.015 250);
+  --sidebar-accent: oklch(0.25 0.02 260);
+  --sidebar-accent-foreground: oklch(0.96 0.01 75);
+  --sidebar-border: oklch(0.96 0.01 75 / 8%);
+  --sidebar-ring: oklch(0.96 0.01 75 / 40%);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    position: relative;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Hide default cursor for all interactive elements */
+  a, button, input, textarea, select, [role="button"], [contenteditable="true"] {
+    cursor: none !important;
+  }
+
+  /* Custom cursor using inline SVG */
+  #custom-cursor {
+    position: fixed;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-4px, -4px);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.3));
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+
+  #custom-cursor svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  #custom-cursor.hovering {
+    transform: translate(-4px, -4px) scale(1.3);
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.5));
+  }
+
+  #custom-cursor.clicking {
+    transform: translate(-4px, -4px) scale(0.8);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
+  }
+
+  /* Sparkle cursor container */
+  #sparkle-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    pointer-events: none;
+    animation: sparkle-float 0.8s ease-out forwards;
+  }
+
+  .sparkle::before,
+  .sparkle::after {
+    content: '';
+    position: absolute;
+    background: oklch(0.96 0.01 75);
+    border-radius: 50%;
+  }
+
+  .sparkle::before {
+    width: 8px;
+    height: 8px;
+    top: 0;
+    left: 0;
+    box-shadow: 0 0 8px oklch(0.96 0.01 75 / 40%);
+  }
+
+  .sparkle::after {
+    width: 4px;
+    height: 4px;
+    top: 2px;
+    left: 2px;
+    background: oklch(1 0 0);
+  }
+
+  @keyframes sparkle-float {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(0);
+    }
+    50% {
+      opacity: 0.8;
+      transform: translate(var(--tx), var(--ty)) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(calc(var(--tx) * 2), calc(var(--ty) * 2)) scale(0.5);
+    }
+  }
+
+  /* Click sparkle burst */
+  .sparkle-burst {
+    animation: sparkle-burst 0.6s ease-out forwards;
+  }
+
+  @keyframes sparkle-burst {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--tx), var(--ty)) scale(0);
+    }
+  }
+
+  /* Hide scrollbar */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  /* Typography base styles */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+
+  /* Smooth transitions for interactive elements */
+  a, button {
+    @apply transition-colors duration-200;
+  }
+
+  /* Image defaults */
+  img {
+    @apply rounded-xl;
+  }
+
+  /* Focus states */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+/* Prose styles for markdown content */
+@layer components {
+  .prose {
+    @apply max-w-none text-foreground;
+  }
+
+  .prose h1 {
+    @apply text-4xl font-semibold tracking-tight mb-6 mt-12 first:mt-0;
+  }
+
+  .prose h2 {
+    @apply text-3xl font-semibold tracking-tight mb-4 mt-10;
+  }
+
+  .prose h3 {
+    @apply text-2xl font-semibold tracking-tight mb-3 mt-8;
+  }
+
+  .prose h4 {
+    @apply text-xl font-semibold tracking-tight mb-3 mt-6;
+  }
+
+  .prose p {
+    @apply text-base leading-7 mb-4;
+  }
+
+  .prose a {
+    @apply text-foreground underline underline-offset-4 decoration-muted-foreground hover:decoration-foreground;
+  }
+
+  .prose ul, .prose ol {
+    @apply mb-4 ml-6 space-y-2;
+  }
+
+  .prose ul {
+    @apply list-disc;
+  }
+
+  .prose ol {
+    @apply list-decimal;
+  }
+
+  .prose li {
+    @apply leading-7;
+  }
+
+  .prose code {
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  /* Remove default pre styling when using SyntaxHighlighter */
+  .prose pre {
+    @apply p-0 m-0 bg-transparent;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+
+  /* Ensure SyntaxHighlighter takes over completely */
+  .prose div[class*="language-"] {
+    @apply my-6;
+  }
+
+  .prose blockquote {
+    @apply border-l-4 border-border pl-4 italic text-muted-foreground my-4;
+  }
+
+  .prose img {
+    @apply rounded-xl my-8 w-full;
+  }
+
+  .prose hr {
+    @apply border-border my-8;
+  }
+
+  .prose table {
+    @apply w-full border-collapse mb-4;
+  }
+
+  .prose th {
+    @apply border border-border px-4 py-2 bg-muted font-semibold text-left;
+  }
+
+  .prose td {
+    @apply border border-border px-4 py-2;
+  }
+
+  /* Custom cursor utility classes */
+  .cursor-fancy {
+    /* Inherited from parent elements */
+  }
+
+  /* Mobile navigation styles - collapsed by default on small screens */
+  @media (max-width: 768px) {
+    nav {
+      background: oklch(1 0 0 / 95%);
+      backdrop-filter: blur(12px);
+      padding: 1rem;
+      border-radius: 1rem;
+      border: 1px solid oklch(0.9 0 0);
+      box-shadow: 0 8px 32px oklch(0 0 0 / 10%);
+    }
+
+    nav ul {
+      max-height: calc(100vh - 8rem);
+      overflow-y: auto;
+    }
   }
 }
