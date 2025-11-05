@@ -12,6 +12,12 @@ interface PostItemProps {
 }
 
 export function PostItem({ post, index = 0 }: PostItemProps) {
+  const parsedDate = post.date ? new Date(post.date) : null;
+  const formattedDate =
+    parsedDate && !Number.isNaN(parsedDate.getTime())
+      ? format(parsedDate, "MMM d, yyyy")
+      : null;
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -46,10 +52,12 @@ export function PostItem({ post, index = 0 }: PostItemProps) {
 
           {/* Metadata */}
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
-            <time dateTime={post.date}>
-              {format(new Date(post.date), "MMM d, yyyy")}
-            </time>
-            <span>•</span>
+            {formattedDate && (
+              <>
+                <time dateTime={post.date}>{formattedDate}</time>
+                <span aria-hidden="true">•</span>
+              </>
+            )}
             <span>{post.readingTime}</span>
           </div>
 

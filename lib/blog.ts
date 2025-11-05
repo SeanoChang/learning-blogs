@@ -7,6 +7,36 @@ import type { BlogPost, BlogPostMetadata, Category } from "./types";
 const postsDirectory = path.join(process.cwd(), "content/posts");
 
 /**
+ * Return the first valid date string found in the frontmatter.
+ * Supports both `date` and `published_at` variations.
+ */
+function resolvePostDate(data: Record<string, unknown>): string {
+  const candidates = [
+    data["date"],
+    data["published_at"],
+    data["publishedAt"],
+  ];
+
+  for (const candidate of candidates) {
+    if (typeof candidate === "string") {
+      const value = candidate.trim();
+      if (!value) {
+        continue;
+      }
+
+      const parsed = new Date(value);
+      if (!Number.isNaN(parsed.getTime())) {
+        return value;
+      }
+    } else if (candidate instanceof Date && !Number.isNaN(candidate.getTime())) {
+      return candidate.toISOString();
+    }
+  }
+
+  return "";
+}
+
+/**
  * Get all blog posts metadata, optionally filtered by tag or category
  */
 export function getAllPosts(tag?: string, category?: Category): BlogPostMetadata[] {
@@ -30,7 +60,7 @@ export function getAllPosts(tag?: string, category?: Category): BlogPostMetadata
         title: data.title || "",
         excerpt: data.excerpt || "",
         coverImage: data.coverImage || "",
-        date: data.date || "",
+        date: resolvePostDate(data),
         tags: data.tags || [],
         category: data.category || undefined,
         project: data.project || undefined,
@@ -90,7 +120,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
       excerpt: data.excerpt || "",
       content,
       coverImage: data.coverImage || "",
-      date: data.date || "",
+      date: resolvePostDate(data),
       tags: data.tags || [],
       category: data.category || undefined,
       project: data.project || undefined,

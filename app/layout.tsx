@@ -17,6 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://me.seanoc.xyz"),
   title: {
     default: "Learning Blog - Minimal & Clean",
     template: "%s | Learning Blog",
