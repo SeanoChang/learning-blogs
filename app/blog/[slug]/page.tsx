@@ -78,7 +78,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   // Build breadcrumbs based on post category and project
-  const breadcrumbs = [{ label: "Home", href: "/" }];
+  const breadcrumbs: Array<{ label: string; href?: string }> = [{ label: "Home", href: "/" }];
 
   if (post.category === "projects") {
     breadcrumbs.push({ label: "Projects", href: "/projects" });

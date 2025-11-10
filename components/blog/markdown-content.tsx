@@ -132,14 +132,16 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         </h3>
       );
     },
-    code({ node, inline, className, children, ...props }) {
+    code(props) {
+      const { node, className, children, ...rest } = props;
+      const inline = !("inline" in props) || props.inline === undefined ? false : props.inline;
       const match = /language-(\w+)/.exec(className || "");
       const codeString = String(children).replace(/\n$/, "");
 
       return !inline && match ? (
         <CodeBlock language={match[1]}>{codeString}</CodeBlock>
       ) : (
-        <code className={className} {...props}>
+        <code className={className} {...rest}>
           {children}
         </code>
       );
