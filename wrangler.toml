@@ -1,14 +1,1 @@
-name = "learning-blogs"
-compatibility_date = "2025-11-10"
-
-# Pages configuration
-pages_build_output_dir = ".next"
-
-# Next.js requires Node.js compatibility
-compatibility_flags = ["nodejs_compat"]
-
-[build]
-command = "pnpm run build"
-
-[build.upload]
-format = "modules"
+name = "blogs"
