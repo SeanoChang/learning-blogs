@@ -6,6 +6,7 @@ import { getPostBySlug, getAllPostSlugs } from "@/lib/blog";
 import { Container } from "@/components/layout/container";
 import { Tag } from "@/components/blog/tag";
 import { MarkdownContent } from "@/components/blog/markdown-content";
+import { MarkdownNavigator } from "@/components/blog/markdown-navigator";
 import { BackButton } from "@/components/blog/back-button";
 import { Breadcrumbs } from "@/components/blog/breadcrumbs";
 
@@ -189,6 +190,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <MarkdownContent content={post.content} />
         </div>
       </article>
+
+      {/* Markdown Navigator */}
+      <MarkdownNavigator content={post.content} />
     </Container>
   );
 }

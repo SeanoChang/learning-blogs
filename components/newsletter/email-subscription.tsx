@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import confetti from "canvas-confetti";
 
 export function EmailSubscription() {
   const [email, setEmail] = useState("");
@@ -26,37 +25,6 @@ export function EmailSubscription() {
     }
 
     return null;
-  };
-
-  const triggerConfetti = () => {
-    const duration = 3000;
-    const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
-
-    function randomInRange(min: number, max: number) {
-      return Math.random() * (max - min) + min;
-    }
-
-    const interval: NodeJS.Timeout = setInterval(function() {
-      const timeLeft = animationEnd - Date.now();
-
-      if (timeLeft <= 0) {
-        return clearInterval(interval);
-      }
-
-      const particleCount = 50 * (timeLeft / duration);
-
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
-      });
-      confetti({
-        ...defaults,
-        particleCount,
-        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
-      });
-    }, 250);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +56,6 @@ export function EmailSubscription() {
       setStatus("success");
       setMessage("Thanks for subscribing!");
       setEmail("");
-      triggerConfetti();
     }, 1000);
 
     // Example integration with newsletter service:
@@ -119,79 +86,112 @@ export function EmailSubscription() {
       transition={{ duration: 0.6 }}
       className="mx-auto max-w-2xl"
     >
-      <div className="rounded-3xl bg-muted/30 backdrop-blur-sm p-8 md:p-12">
-        <div className="space-y-6 text-center">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-semibold tracking-tight">
-              Stay Updated
-            </h2>
-            <p className="text-muted-foreground">
-              Get the latest posts delivered right to your inbox.
-            </p>
-          </div>
+      <div className="relative">
+        <AnimatePresence>
+          {status === "loading" && (
+            <motion.span
+              key="neon-border"
+              className="pointer-events-none absolute -inset-1 rounded-[2.25rem]"
+              style={{
+                padding: "2px",
+                background:
+                  "conic-gradient(from 0deg, transparent 0deg 40deg, oklch(0.78 0.15 280 / 0.8) 40deg 60deg, transparent 60deg 140deg, oklch(0.78 0.15 280 / 0.8) 140deg 160deg, transparent 160deg 240deg, oklch(0.78 0.15 280 / 0.8) 240deg 260deg, transparent 260deg 360deg)",
+                filter: "drop-shadow(0 0 16px oklch(0.78 0.15 280 / 0.6)) drop-shadow(0 0 32px oklch(0.78 0.15 280 / 0.4))",
+                WebkitMask:
+                  "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+                WebkitMaskComposite: "xor",
+                maskComposite: "exclude",
+              }}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1, rotate: 360 }}
+              exit={{ opacity: 0, scale: 0.97 }}
+              transition={{
+                opacity: { duration: 0.3, ease: "easeOut" },
+                scale: { duration: 0.3, ease: "easeOut" },
+                rotate: { duration: 1.6, ease: "linear", repeat: Infinity },
+              }}
+            />
+          )}
+        </AnimatePresence>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex-1 relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  placeholder="your@email.com"
-                  disabled={status === "loading" || status === "success"}
-                  className={`w-full rounded-full bg-background px-6 py-3 text-sm outline-none ring-1 transition-all duration-200 disabled:opacity-50 ${
-                    validationError
-                      ? "ring-destructive focus:ring-2 focus:ring-destructive"
-                      : "ring-border focus:ring-2 focus:ring-primary/40"
-                  }`}
-                  aria-invalid={!!validationError}
-                  aria-describedby={validationError ? "email-error" : undefined}
-                />
-                <AnimatePresence mode="wait">
-                  {validationError && (
-                    <motion.p
-                      id="email-error"
-                      initial={{ opacity: 0, y: -8, height: 0 }}
-                      animate={{ opacity: 1, y: 0, height: "auto" }}
-                      exit={{ opacity: 0, y: -8, height: 0 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute left-0 top-full mt-2 text-sm text-destructive px-2"
-                      role="alert"
-                    >
-                      {validationError}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-              </div>
-              <button
-                type="submit"
-                disabled={status === "loading" || status === "success"}
-                className="rounded-full bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-all duration-200 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
-              >
-                {status === "loading" ? "Subscribing..." : status === "success" ? "Subscribed!" : "Subscribe"}
-              </button>
+        <div className="relative rounded-3xl border border-border/40 bg-muted/30 p-8 backdrop-blur-sm md:p-12">
+          <div className="space-y-6 text-center">
+            <div className="space-y-2">
+              <h2 className="text-3xl font-semibold tracking-tight">
+                Stay Updated
+              </h2>
+              <p className="text-muted-foreground">
+                Get the latest posts delivered right to your inbox.
+              </p>
             </div>
 
-            <AnimatePresence mode="wait">
-              {message && (
-                <motion.p
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                  className={`text-sm text-center ${
-                    status === "success" ? "text-primary" : "text-destructive"
-                  }`}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="relative flex-1">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    placeholder="your@email.com"
+                    disabled={status === "loading" || status === "success"}
+                    className={`w-full rounded-full bg-background px-6 py-3 text-sm outline-none ring-1 transition-all duration-200 disabled:opacity-50 ${
+                      validationError
+                        ? "ring-destructive focus:ring-2 focus:ring-destructive"
+                        : "ring-border focus:ring-2 focus:ring-primary/40"
+                    }`}
+                    aria-invalid={!!validationError}
+                    aria-describedby={validationError ? "email-error" : undefined}
+                  />
+                  <AnimatePresence mode="wait">
+                    {validationError && (
+                      <motion.p
+                        id="email-error"
+                        initial={{ opacity: 0, y: -8, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: "auto" }}
+                        exit={{ opacity: 0, y: -8, height: 0 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="absolute left-0 top-full mt-2 px-2 text-sm text-destructive"
+                        role="alert"
+                      >
+                        {validationError}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <button
+                  type="submit"
+                  disabled={status === "loading" || status === "success"}
+                  className="rounded-full bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-all duration-200 hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
                 >
-                  {message}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </form>
+                  {status === "loading"
+                    ? "Subscribing..."
+                    : status === "success"
+                      ? "Subscribed!"
+                      : "Subscribe"}
+                </button>
+              </div>
 
-          <p className="text-xs text-muted-foreground">
-            No spam. Unsubscribe anytime.
-          </p>
+              <AnimatePresence mode="wait">
+                {message && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className={`text-sm text-center ${
+                      status === "success" ? "text-primary" : "text-destructive"
+                    }`}
+                  >
+                    {message}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </form>
+
+            <p className="text-xs text-muted-foreground">
+              No spam. Unsubscribe anytime.
+            </p>
+          </div>
         </div>
       </div>
     </motion.section>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 
 const navItems = [
   { id: "home", name: "Home", href: "/" },
@@ -20,6 +21,13 @@ export function Navigator({ projects }: NavigatorProps) {
   const [activeSection, setActiveSection] = useState("home");
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const [isProjectsExpanded, setIsProjectsExpanded] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Show navigator after a short delay
+    const timer = setTimeout(() => setIsVisible(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Determine active section and project based on pathname
@@ -53,49 +61,92 @@ export function Navigator({ projects }: NavigatorProps) {
     }
   }, [pathname, projects]);
 
+  if (!isVisible) return null;
+
   return (
-    <nav className="fixed left-4 md:left-8 top-4 md:top-8 z-50 max-w-[200px]">
-      <ul className="space-y-2">
-        {navItems.map((item) => (
-          <li key={item.id}>
-            <Link
-              href={item.href}
-              className={`block text-sm md:text-base transition-colors cursor-fancy ${
-                item.id === activeSection
-                  ? "text-foreground line-through"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {item.name}
-            </Link>
+    <motion.nav
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="fixed left-4 md:left-8 top-24 z-40 max-w-[200px]"
+    >
+      <div className="sticky top-24">
+        <div className="text-xs font-medium text-muted-foreground mb-3 uppercase tracking-wider">
+          Navigation
+        </div>
+        <ul className="space-y-2 border-l border-border/40">
+          {navItems.map((item) => {
+            const isActive = item.id === activeSection;
 
-            {/* Show nested projects when on projects section */}
-            {item.id === "projects" && isProjectsExpanded && projects.length > 0 && (
-              <ul className="mt-2 ml-4 space-y-1.5 border-l border-muted-foreground/20 pl-3">
-                {projects.map((project) => {
-                  const projectSlug = project.toLowerCase().replace(/\s+/g, '-');
-                  const isActive = activeProject === project;
+            return (
+              <li key={item.id} className="relative">
+                <Link
+                  href={item.href}
+                  className={`block text-sm transition-all duration-200 pl-4 py-1 cursor-fancy ${
+                    isActive
+                      ? "text-foreground font-medium"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {item.name}
+                </Link>
 
-                  return (
-                    <li key={project}>
-                      <Link
-                        href={`/projects/${projectSlug}`}
-                        className={`block text-xs md:text-sm transition-colors cursor-fancy ${
-                          isActive
-                            ? "text-foreground line-through"
-                            : "text-muted-foreground/80 hover:text-foreground"
-                        }`}
-                      >
-                        {project}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
-    </nav>
+                {isActive && (
+                  <motion.div
+                    layoutId="activeNavIndicator"
+                    className="absolute left-0 top-0 bottom-0 w-[2px] bg-foreground"
+                    initial={false}
+                    transition={{
+                      type: "spring",
+                      stiffness: 380,
+                      damping: 30,
+                    }}
+                  />
+                )}
+
+                {/* Show nested projects when on projects section */}
+                {item.id === "projects" && isProjectsExpanded && projects.length > 0 && (
+                  <ul className="mt-2 ml-2 space-y-2 border-l border-border/40">
+                    {projects.map((project) => {
+                      const projectSlug = project.toLowerCase().replace(/\s+/g, '-');
+                      const isProjectActive = activeProject === project;
+
+                      return (
+                        <li key={project} className="relative ml-2">
+                          <Link
+                            href={`/projects/${projectSlug}`}
+                            className={`block text-sm transition-all duration-200 pl-4 py-1 cursor-fancy ${
+                              isProjectActive
+                                ? "text-foreground font-medium"
+                                : "text-muted-foreground/80 hover:text-foreground"
+                            }`}
+                          >
+                            {project}
+                          </Link>
+
+                          {isProjectActive && (
+                            <motion.div
+                              layoutId="activeProjectIndicator"
+                              className="absolute left-0 top-0 bottom-0 w-[2px] bg-foreground"
+                              initial={false}
+                              transition={{
+                                type: "spring",
+                                stiffness: 380,
+                                damping: 30,
+                              }}
+                            />
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </motion.nav>
   );
 }

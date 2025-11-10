@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import type { ReactNode } from "react";
 import { motion } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import type { Components } from "react-markdown";
+import type { Heading as MdastHeading } from "mdast";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Check, Copy } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  createHeadingSlugger,
+  extractMarkdownHeadings,
+} from "@/lib/markdown-headings";
 
 interface MarkdownContentProps {
   content: string;
@@ -52,7 +59,108 @@ function CodeBlock({ language, children }: { language: string; children: string 
   );
 }
 
+const extractHeadingText = (node?: MdastHeading): string => {
+  if (!node || !node.children) {
+    return "";
+  }
+
+  const collect = (child: any): string => {
+    if (!child) return "";
+    if (typeof child.value === "string") {
+      return child.value;
+    }
+    if (Array.isArray(child.children)) {
+      return child.children.map(collect).join("");
+    }
+    return "";
+  };
+
+  return node.children.map(collect).join(" ").trim();
+};
+
 export function MarkdownContent({ content, className }: MarkdownContentProps) {
+  const headings = useMemo(() => extractMarkdownHeadings(content), [content]);
+
+  const headingIdByLine = useMemo(() => {
+    const map = new Map<number, string>();
+    headings.forEach(({ line, id }) => {
+      map.set(line, id);
+    });
+    return map;
+  }, [headings]);
+
+  const fallbackSlugger = useMemo(() => createHeadingSlugger(), [content]);
+
+  const resolveHeadingId = (node?: MdastHeading, children?: ReactNode) => {
+    const line = node?.position?.start?.line;
+    if (line !== undefined) {
+      const mapped = headingIdByLine.get(line);
+      if (mapped) {
+        return mapped;
+      }
+    }
+
+    const fallbackText =
+      extractHeadingText(node) ||
+      (typeof children === "string" ? children : "");
+
+    return fallbackSlugger(fallbackText);
+  };
+
+  const markdownComponents: Components = {
+    h1({ node, children, ...props }) {
+      const id = resolveHeadingId(node as MdastHeading | undefined, children);
+      return (
+        <h1 id={id} {...props}>
+          {children}
+        </h1>
+      );
+    },
+    h2({ node, children, ...props }) {
+      const id = resolveHeadingId(node as MdastHeading | undefined, children);
+      return (
+        <h2 id={id} {...props}>
+          {children}
+        </h2>
+      );
+    },
+    h3({ node, children, ...props }) {
+      const id = resolveHeadingId(node as MdastHeading | undefined, children);
+      return (
+        <h3 id={id} {...props}>
+          {children}
+        </h3>
+      );
+    },
+    code({ node, inline, className, children, ...props }) {
+      const match = /language-(\w+)/.exec(className || "");
+      const codeString = String(children).replace(/\n$/, "");
+
+      return !inline && match ? (
+        <CodeBlock language={match[1]}>{codeString}</CodeBlock>
+      ) : (
+        <code className={className} {...props}>
+          {children}
+        </code>
+      );
+    },
+    a({ node, href, children, ...props }) {
+      const isExternal =
+        href?.startsWith("http://") || href?.startsWith("https://");
+
+      return (
+        <a
+          href={href}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+          {...props}
+        >
+          {children}
+        </a>
+      );
+    },
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -60,25 +168,7 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
       transition={{ duration: 0.5, delay: 0.2 }}
       className={cn("prose prose-neutral dark:prose-invert", className)}
     >
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          code({ node, inline, className, children, ...props }: any) {
-            const match = /language-(\w+)/.exec(className || "");
-            const codeString = String(children).replace(/\n$/, "");
-
-            return !inline && match ? (
-              <CodeBlock language={match[1]}>
-                {codeString}
-              </CodeBlock>
-            ) : (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            );
-          },
-        }}
-      >
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
         {content}
       </ReactMarkdown>
     </motion.div>
