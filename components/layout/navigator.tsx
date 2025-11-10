@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -18,9 +18,6 @@ interface NavigatorProps {
 
 export function Navigator({ projects }: NavigatorProps) {
   const pathname = usePathname();
-  const [activeSection, setActiveSection] = useState("home");
-  const [activeProject, setActiveProject] = useState<string | null>(null);
-  const [isProjectsExpanded, setIsProjectsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -29,36 +26,30 @@ export function Navigator({ projects }: NavigatorProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    // Determine active section and project based on pathname
+  // Derive state from pathname instead of using effects
+  const { activeSection, activeProject, isProjectsExpanded } = useMemo(() => {
     if (pathname === "/") {
-      setActiveSection("home");
-      setActiveProject(null);
-      setIsProjectsExpanded(false);
+      return { activeSection: "home", activeProject: null, isProjectsExpanded: false };
     } else if (pathname.startsWith("/projects")) {
-      setActiveSection("projects");
-      setIsProjectsExpanded(true);
-
       // Check if on a specific project page
       const projectMatch = pathname.match(/\/projects\/([^/]+)/);
+      let matchedProject = null;
+
       if (projectMatch) {
         const projectSlug = projectMatch[1];
-        const matchedProject = projects.find(
+        matchedProject = projects.find(
           (p) => p.toLowerCase().replace(/\s+/g, '-') === projectSlug
-        );
-        setActiveProject(matchedProject || null);
-      } else {
-        setActiveProject(null);
+        ) || null;
       }
+
+      return { activeSection: "projects", activeProject: matchedProject, isProjectsExpanded: true };
     } else if (pathname.startsWith("/productivity")) {
-      setActiveSection("productivity");
-      setActiveProject(null);
-      setIsProjectsExpanded(false);
+      return { activeSection: "productivity", activeProject: null, isProjectsExpanded: false };
     } else if (pathname.startsWith("/life")) {
-      setActiveSection("life");
-      setActiveProject(null);
-      setIsProjectsExpanded(false);
+      return { activeSection: "life", activeProject: null, isProjectsExpanded: false };
     }
+
+    return { activeSection: "home", activeProject: null, isProjectsExpanded: false };
   }, [pathname, projects]);
 
   if (!isVisible) return null;

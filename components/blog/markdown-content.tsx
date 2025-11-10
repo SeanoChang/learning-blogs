@@ -64,6 +64,7 @@ const extractHeadingText = (node?: MdastHeading): string => {
     return "";
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const collect = (child: any): string => {
     if (!child) return "";
     if (typeof child.value === "string") {
@@ -89,7 +90,7 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
     return map;
   }, [headings]);
 
-  const fallbackSlugger = useMemo(() => createHeadingSlugger(), [content]);
+  const fallbackSlugger = useMemo(() => createHeadingSlugger(), []);
 
   const resolveHeadingId = (node?: MdastHeading, children?: ReactNode) => {
     const line = node?.position?.start?.line;
@@ -133,7 +134,7 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
       );
     },
     code(props) {
-      const { node, className, children, ...rest } = props;
+      const { className, children, ...rest } = props;
       const inline = !("inline" in props) || props.inline === undefined ? false : props.inline;
       const match = /language-(\w+)/.exec(className || "");
       const codeString = String(children).replace(/\n$/, "");
@@ -146,7 +147,7 @@ export function MarkdownContent({ content, className }: MarkdownContentProps) {
         </code>
       );
     },
-    a({ node, href, children, ...props }) {
+    a({ href, children, ...props }) {
       const isExternal =
         href?.startsWith("http://") || href?.startsWith("https://");
 

@@ -12,17 +12,8 @@ import {
   type PostListItem,
   type PostFilters,
   type TagWithCount,
-  PostFrontmatterSchema,
 } from '../types/post';
-import { POSTS_DIRECTORY, WORDS_PER_MINUTE } from '../config/constants';
-
-/**
- * Calculate estimated read time from content
- */
-function calculateReadTime(content: string): number {
-  const words = content.trim().split(/\s+/).length;
-  return Math.ceil(words / WORDS_PER_MINUTE);
-}
+import { POSTS_DIRECTORY } from '../config/constants';
 
 /**
  * Fetch posts from Supabase with filters and pagination
