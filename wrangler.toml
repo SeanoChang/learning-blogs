@@ -1,2 +1,9 @@
 name = "blogs"
 compatibility_date = "2025-11-10"
+
+[build]
+command = "pnpm run build"
+cwd = "."
+
+[assets]
+directory = "./.next"
