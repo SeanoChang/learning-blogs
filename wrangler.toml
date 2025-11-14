@@ -1,5 +1,5 @@
 name = "blogs"
-compatibility_date = "2025-11-10"
+compatibility_date = "2025-11-14"
 
 [build]
 command = "pnpm run build"
