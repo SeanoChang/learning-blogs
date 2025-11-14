@@ -1,0 +1,10 @@
+{
+  "build": {
+    "command": "pnpm run build",
+    "output_directory": ".next"
+  },
+  "deployment": {
+    "compatibility_date": "2025-11-14",
+    "compatibility_flags": ["nodejs_compat"]
+  }
+}

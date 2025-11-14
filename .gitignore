@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated feeds (built during deployment)
+/public/feed.xml
+/public/posts.json
