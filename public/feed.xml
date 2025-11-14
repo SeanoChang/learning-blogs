@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sean O'Connor's Blog</title>
+    <link>https://seanoc.xyz</link>
+    <description>Projects, productivity, and life insights</description>
+    <language>en</language>
+    <lastBuildDate>Fri, 14 Nov 2025 12:29:07 GMT</lastBuildDate>
+    <atom:link href="https://seanoc.xyz/feed.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title><![CDATA[SQL vs NoSQL: A Comprehensive Guide]]></title>
+      <link>https://seanoc.xyz/blog/sql-vs-nosql</link>
+      <guid isPermaLink="true">https://seanoc.xyz/blog/sql-vs-nosql</guid>
+      <pubDate>Tue, 04 Nov 2025 00:00:00 GMT</pubDate>
+      <description><![CDATA[Deep dive into SQL and NoSQL databases, their data structures, use cases, and performance characteristics. Learn when to use each database type.]]></description>
+      <category>projects</category>
+      <category>databases</category>
+      <category>sql</category>
+      <category>nosql</category>
+      <category>system-design</category>
+      <category>architecture</category>
+    </item>
+  </channel>
+</rss>

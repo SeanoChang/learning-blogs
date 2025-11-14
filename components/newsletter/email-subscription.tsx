@@ -9,6 +9,8 @@ export function EmailSubscription() {
   const [message, setMessage] = useState("");
   const [validationError, setValidationError] = useState("");
 
+  const isDisabled = status === "loading" || status === "success";
+
   const validateEmail = (email: string): string | null => {
     if (!email) {
       return "Please enter your email address";
@@ -134,7 +136,7 @@ export function EmailSubscription() {
                         value={email}
                         onChange={handleEmailChange}
                         placeholder="your@email.com"
-                        disabled={status === "loading" || status === "success"}
+                        disabled={isDisabled}
                         className={`w-full rounded-full bg-background px-6 py-3 text-sm outline-none ring-1 transition-all duration-200 disabled:opacity-50 ${
                           validationError
                             ? "ring-destructive focus:ring-2 focus:ring-destructive"
@@ -166,7 +168,7 @@ export function EmailSubscription() {
 
                 <motion.button
                   type="submit"
-                  disabled={status === "loading" || status === "success"}
+                  disabled={isDisabled}
                   className="rounded-full bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-all duration-200 hover:scale-[1.02] hover:bg-primary/90 active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100"
                   animate={
                     status === "success"
