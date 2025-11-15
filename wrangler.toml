@@ -1,14 +1,6 @@
 name = "learning-blogs"
 compatibility_date = "2025-11-14"
-workers_dev = false
-
-# No build command needed - already built by CI/CD
-# [build]
-# command = "pnpm run build"
-# cwd = "."
-
-[assets]
-directory = "./out"
+pages_build_output_dir = "./out"
 
 # Add your custom domain routes here
 # Uncomment and update with your actual domain
