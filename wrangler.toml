@@ -2,6 +2,10 @@ name = "learning-blogs"
 compatibility_date = "2025-11-14"
 pages_build_output_dir = "./out"
 
+# Custom build configuration
+[build]
+command = "pnpm run build"
+
 # Add your custom domain routes here
 # Uncomment and update with your actual domain
 # routes = [
